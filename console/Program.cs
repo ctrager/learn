@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Data.SqlTypes;
-using System.Data;
-using System.ComponentModel;
+using System.IO;
+using System.Threading.Tasks;
+
 
 public class Program
 {
@@ -14,49 +12,37 @@ public class Program
 
     public static void Main(string[] args)
     {
-
-        
-        /*
-
-          Budoco injects a where clause into queries when the logged on user belongs to an
-          organization and so is restricted to only issues associated with that organization.
-          The injection logic works like this:
-
-          First look for "hints" ORG_JOIN $AND_ORG or $WHERE_ORG.
-          You will probably want to use these hints if your queries are complex, like, if they use subquiries.
-
-          if missing, look for first occurence of "where" and first occurence of "order"
-
-          if yes where and yes order, then inject before order WITH AND
-              select ... where foo AND (org = N) order by bar
-
-          if yes where and no  order, then inject at the end WITH AND
-              select ... where foo AND (org = N) 
-
-          if no  where and yes order, then inject before order WITH WHERE instead of AND
-              select ... WHERE (org = N) order by bar
-
-          if no  where and no  order, then inject at the end WITH WHERE instead of AND
-              select ... WHERE (org = N)
-          */
+        //my_linq();
+        foo();
+        Console.WriteLine("done");
     }
 
-    public static string enhance_sql_per_user(HttpContext context, string sql)
+    public static async void foo()
     {
-        
-        //int us_id = context.Session.GetInt32("us_id");
-        //int us_organization = context.Session.GetInt32("us_organization");
+        await FooAsync();
+        //await FooAsync();
+    }
 
-        string modified_sql = sql.Replace("$ME", us_id.ToString());
 
-        int pos = string.IndexOf($AndOrg
+    static async Task FooAsync()
+    {
+        string text = await File.ReadAllTextAsync("Program.cs");
+        Console.WriteLine(text);
+        //return s;
 
-        return modified_sql;
+    }
+
+    public static void my_linq()
+    {
+        string[] array = { "dog", "cat", "apple", "sun", "sky", "human", "tree", "violin", "shrimp", "water", "sand" };
+
+        var result = from s in array where s.StartsWith("s") orderby s[1] select s;
+
+        var result2 = array.Where(s => s.StartsWith("s")).OrderBy(s => s[1]).Select(s => s);
+
+        foreach (string s2 in result2)
+        {
+            Console.WriteLine(s2);
+        }
     }
 }
-
-}
-
-
-
-
